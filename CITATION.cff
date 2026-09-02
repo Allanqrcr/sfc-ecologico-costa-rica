@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "Si utiliza este material, por favor cite el artículo y este repositorio."
+title: "Modelo Stock-Flow Consistente con extensión ecológica para Costa Rica"
+abstract: >-
+  Código en R, datos derivados y resultados del modelo Stock-Flow Consistente
+  con extensión ecológica (E-SFC) calibrado para Costa Rica al año base 2022,
+  empleado para evaluar escenarios de transición energética hasta 2050.
+type: software
+authors:
+  - family-names: "Quesada Rojas"
+    given-names: "Allan"
+    affiliation: "Universidad Nacional, Costa Rica"
+  - family-names: "Otoya Chavarría"
+    given-names: "Marco"
+    affiliation: "Universidad Nacional, Costa Rica"
+license: MIT
+keywords:
+  - stock-flow consistent
+  - macroeconomía ecológica
+  - descarbonización
+  - Costa Rica
+  - transición energética

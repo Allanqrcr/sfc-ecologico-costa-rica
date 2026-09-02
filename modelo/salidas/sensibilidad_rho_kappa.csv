@@ -1,0 +1,71 @@
+"escenario","rho","factor_kappa","PIB_estacionario","dano_pct"
+"Continuidad",0.005,0.25,45393.6,16.896
+"Continuidad",0.005,0.5,34833.1,25.931
+"Continuidad",0.005,1,26118.9,38.887
+"Continuidad",0.005,2,19257,57.342
+"Continuidad",0.005,4,14026.7,83.535
+"Continuidad",0.01,0.25,57367.1,10.676
+"Continuidad",0.01,0.5,45393.6,16.896
+"Continuidad",0.01,1,34833.1,25.931
+"Continuidad",0.01,2,26118.9,38.887
+"Continuidad",0.01,4,19257,57.342
+"Continuidad",0.02,0.25,69749.3,6.49
+"Continuidad",0.02,0.5,57367.1,10.676
+"Continuidad",0.02,1,45393.6,16.896
+"Continuidad",0.02,2,34833.1,25.931
+"Continuidad",0.02,4,26118.9,38.887
+"Continuidad",0.05,0.25,84322.4,3.139
+"Continuidad",0.05,0.5,73589.9,5.478
+"Continuidad",0.05,1,61372.6,9.138
+"Continuidad",0.05,2,49130.4,14.63
+"Continuidad",0.05,4,38041.6,22.655
+"Continuidad",0.1,0.25,92493.6,1.721
+"Continuidad",0.1,0.5,84322.4,3.139
+"Continuidad",0.1,1,73589.9,5.478
+"Continuidad",0.1,2,61372.6,9.138
+"Continuidad",0.1,4,49130.4,14.63
+"Continuidad",0.218080022778761,0.25,98425.5,0.84
+"Continuidad",0.218080022778761,0.5,93314.8,1.593
+"Continuidad",0.218080022778761,1,85495.7,2.918
+"Continuidad",0.218080022778761,2,75039.9,5.123
+"Continuidad",0.218080022778761,4,62928.8,8.592
+"Continuidad",0.4,0.25,101143.8,0.471
+"Continuidad",0.4,0.5,97918.2,0.911
+"Continuidad",0.4,1,92493.6,1.721
+"Continuidad",0.4,2,84322.4,3.139
+"Continuidad",0.4,4,73589.9,5.478
+"Totalmente renovable",0.005,0.25,80114,3.981
+"Totalmente renovable",0.005,0.5,68592.5,6.817
+"Totalmente renovable",0.005,1,56191.4,11.17
+"Totalmente renovable",0.005,2,44318.2,17.619
+"Totalmente renovable",0.005,4,33922.7,26.973
+"Totalmente renovable",0.01,0.25,89431.3,2.222
+"Totalmente renovable",0.01,0.5,80114,3.981
+"Totalmente renovable",0.01,1,68592.5,6.817
+"Totalmente renovable",0.01,2,56191.4,11.17
+"Totalmente renovable",0.01,4,44318.2,17.619
+"Totalmente renovable",0.02,0.25,95965.5,1.192
+"Totalmente renovable",0.02,0.5,89431.3,2.222
+"Totalmente renovable",0.02,1,80114,3.981
+"Totalmente renovable",0.02,2,68592.5,6.817
+"Totalmente renovable",0.02,4,56191.4,11.17
+"Totalmente renovable",0.05,0.25,100910.7,0.501
+"Totalmente renovable",0.05,0.5,97508.9,0.969
+"Totalmente renovable",0.05,1,91839.1,1.826
+"Totalmente renovable",0.05,2,83401.5,3.316
+"Totalmente renovable",0.05,4,72470,5.762
+"Totalmente renovable",0.1,0.25,102797.6,0.255
+"Totalmente renovable",0.1,0.5,100910.7,0.501
+"Totalmente renovable",0.1,1,97508.9,0.969
+"Totalmente renovable",0.1,2,91839.1,1.826
+"Totalmente renovable",0.1,4,83401.5,3.316
+"Totalmente renovable",0.218080022778761,0.25,103879.6,0.118
+"Totalmente renovable",0.218080022778761,0.5,102960.3,0.235
+"Totalmente renovable",0.218080022778761,1,101214.2,0.461
+"Totalmente renovable",0.218080022778761,2,98042.4,0.894
+"Totalmente renovable",0.218080022778761,4,92693.6,1.69
+"Totalmente renovable",0.4,0.25,104308.7,0.065
+"Totalmente renovable",0.4,0.5,103795.2,0.129
+"Totalmente renovable",0.4,1,102797.6,0.255
+"Totalmente renovable",0.4,2,100910.7,0.501
+"Totalmente renovable",0.4,4,97508.9,0.969

@@ -1,0 +1,5 @@
+"especificacion","escenario","PIB_estacionario","dano_pct","parametro_compuesto"
+"Adoptada: rho disipa el acervo","Continuidad",85495.7,2.918,3.414e-07
+"Adoptada: rho disipa el acervo","Totalmente renovable",101214.2,0.461,4.558e-08
+"Alternativa: rho compensa el flujo, delta = 1 %","Continuidad",38381,22.341,5.821e-06
+"Alternativa: rho compensa el flujo, delta = 1 %","Totalmente renovable",72860.1,5.662,7.772e-07

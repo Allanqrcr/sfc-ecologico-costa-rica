@@ -1,0 +1,8 @@
+Scripts auxiliares generados durante la revision para verificar cada uno de los
+siete cambios de codigo y para sustentar las decisiones de calibracion.
+
+No forman parte del flujo de produccion. Las cifras del articulo las genera
+unicamente ../SFC-E_version_revisada.R
+
+Se conservan porque documentan como se llego a cada conclusion y permiten
+reproducir las tablas que aparecen en la bitacora de la revision.

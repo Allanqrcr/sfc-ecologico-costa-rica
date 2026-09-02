@@ -1,0 +1,14 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Sistema
+.DS_Store
+Thumbs.db
+~$*
+
+# Documentos de trabajo (no forman parte del material publicado)
+*.docx
+*.pbix
