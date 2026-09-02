@@ -51,7 +51,7 @@ text(75,63.4,"BLOQUE BIOFÍSICO",col=VE,cex=0.7,font=2)
 
 caja(66,56,24,"Energía  E = φ · Y",VE,VEC)
 caja(66,47.5,24,"Emisiones  CO2 = σ · E",VE,VEC,0.70)
-caja(75,39,38,"Stock de carbono  S = (1 − ρ) · S(−1) + CO2",VE,VEC,0.66)
+caja(75,39,38,"Acervo de emisiones acumuladas  S = (1 − ρ) · S(−1) + CO2",VE,VEC,0.66)
 caja(75,30,24,"Daño  d = κ · S",VE,VEC)
 
 fl(34.5,48.6,54,55.2,VE); etq(44,53.4,"φ",VE,0.85)
@@ -75,7 +75,7 @@ pd<-c("Cuentas Nacionales 2022","reproduce el déficit de 2022",
       "Balance de Energía 2022","Inventario GEI y metas del PND")
 for(i in 1:4){ text(px[i],9.3,pl[i],col=NAR,cex=0.64,font=2)
                text(px[i],7.4,pd[i],col=NAR,cex=0.55,font=3) }
-text(50,5.0,"Fijos en todos los escenarios:   W  productividad    a1, a2  propensiones a consumir    ρ  absorción    κ  sensibilidad del daño",
+text(50,5.0,"Fijos en todos los escenarios:   W  productividad    a1, a2  propensiones a consumir    ρ  disipación del acervo    κ  sensibilidad del daño",
      col=NAR,cex=0.6)
 text(50,3.2,"Escenarios:  (1) sin bloque biofísico   ·   (2) global mixto   ·   (3) totalmente renovable   ·   (4) Plan Nacional de Descarbonización",
      col=NAR,cex=0.58,font=3)

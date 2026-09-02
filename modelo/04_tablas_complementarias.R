@@ -21,8 +21,10 @@ PHI_R <- 1.28975587832427; SIG_R <- 0.00882132065193575
 Yss <- function(a) (-TH + sqrt(TH^2 + 4 * a * G)) / (2 * a)
 
 ## --- 1. Coherencia entre las emisiones del escenario y las metas del plan ---
+## Mismos valores que en 01_modelo_SFCE.R (hoja "Plan Descarbonizacion" de
+## los archivos de parametros por tramo); antes diferian en los tres ultimos.
 META_PND <- c(6852.646424416003, 6281.7042423699995, 5710.091940392017,
-              5138.479638414033, 4566.86733643605, 3995.255034458066)
+              5139.149758346013, 4568.207576300009, 3997.2653942540055)
 ser  <- read.csv(file.path(OUT, "series_FINAL.csv"), stringsAsFactors = FALSE)
 pnd  <- ser[ser$esc == "4. PND", ]
 anios <- c(2025, 2030, 2035, 2040, 2045, 2050)
