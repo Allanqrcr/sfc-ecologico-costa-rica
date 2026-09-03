@@ -1,7 +1,7 @@
 ## Diagrama de flujo del modelo SFC-E (punto A.17 del compendio)
 png(file.path("salidas","Figura_diagrama_modelo.png"),
     width = 3300, height = 2200, res = 300)
-par(mar = c(0,0,2.4,0), xaxs = "i", yaxs = "i")
+par(mar = c(0,0,0.6,0), xaxs = "i", yaxs = "i")
 plot(NA, xlim = c(0,100), ylim = c(0,70), axes = FALSE, xlab = "", ylab = "")
 
 AZ<-"#1F3864"; AZC<-"#D9E2F3"; VE<-"#1E5631"; VEC<-"#DCEBD8"
@@ -16,8 +16,7 @@ fl <- function(x1,y1,x2,y2,col=GR,lwd=1.8,lty=1)
 etq <- function(x,y,t,col=GR,cex=0.58,srt=0)
   text(x,y,t,cex=cex,col=col,font=3,srt=srt)
 
-title(main="Estructura del modelo SFC-E aplicado a Costa Rica",
-      cex.main=1.08,col.main=AZ,font.main=2,line=0.5)
+## (el titulo va en la leyenda de la Figura 1 dentro del articulo)
 
 ## ================= BLOQUE MACROECONÓMICO-FINANCIERO =================
 rect(2,16,46,65,border=AZ,col=NA,lwd=1.2,lty=3)
