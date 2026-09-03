@@ -45,6 +45,27 @@ PHI_PND    <- c(1.94815033931687, 1.8455609450008, 1.75313427460553,
 META_PND   <- c(6852.646424416003, 6281.7042423699995, 5710.091940392017,
                 5139.149758346013, 4568.207576300009, 3997.2653942540055)
 
+## --- 4b. Forma estructural del bloque biofísico: dos ramas ----------------
+##  Las intensidades de cada escenario no son parámetros independientes: son
+##  promedios ponderados, por la participación renovable en la energía (omega),
+##  de dos ramas productivas definidas por la fuente de energía que emplean.
+##    rama verde (g):    energía renovable, productividad PI_G, intensidad SIG_G
+##    rama no verde (c): energía fósil,     productividad PI_C, intensidad SIG_C
+##  De ahí:  phi(omega)   = 1 / (PI_G*omega + PI_C*(1-omega))
+##           sigma(omega) = SIG_G*omega + SIG_C*(1-omega)
+##  y el producto y las emisiones se reparten de forma exactamente aditiva:
+##           Y = PI_G*E_g + PI_C*E_c ;  CO2 = SIG_G*E_g + SIG_C*E_c.
+EREN22  <- 63577.8                        # TJ renovables 2022, Balance Nacional de Energía
+EFOS22  <- 118864.17                      # TJ fósiles 2022
+OMEGA22 <- EREN22 / (EREN22 + EFOS22)     # participación renovable en la energía, 2022
+PI_C    <- 0.3244742314082606             # productividad energética rama no verde, MUSD por TJ
+PI_G    <- 0.7753405251381855             # productividad energética rama verde  (= beta * PI_C, beta de la MIP)
+SIG_C   <- 6926.40983985536 / EFOS22      # Gg CO2 por TJ, rama no verde (Inventario GEI 2021)
+SIG_G   <- 560.840160144641 / EREN22      # Gg CO2 por TJ, rama verde
+phi_de       <- function(w) 1 / (PI_G * w + PI_C * (1 - w))
+sig_de       <- function(w) SIG_G * w + SIG_C * (1 - w)
+omega_de_phi <- function(phi) (1 / phi - PI_C) / (PI_G - PI_C)
+
 ## --- 5. Recalibración de la intensidad de carbono del escenario del plan ---
 ##  sigma se calibra contra la energía que el modelo implica (phi x PIB), no
 ##  contra la energía total del balance del año base. La diferencia entre ambas
@@ -79,11 +100,21 @@ simular <- function(phi, sigma, n = 29, Hh0, Cstock0, Gd = G, theta = TH,
     Y  <- uniroot(f, c(1, 1e7), tol = 1e-10)$root
     CO2 <- sigma[t] * phi[t] * Y; Cst <- (1 - rho) * Cs_1 + CO2; d <- kappa * Cst
     YD <- Y * (1 - theta - d); Cd <- a1 * YD + a2 * Hh_1; Hh <- Hh_1 + YD - Cd
-    o[t, c("Y","Y_eff","E","CO2","Cstock","damage","YD","Cd","Hh","TXd","Ns","def")] <-
+    o[t, c("Y","Y_eff","E","CO2","Cstock","damage","YD","Cd","Hh","TXd","Ns","def","phi","sigma")] <-
       c(Y, Y*(1-d), phi[t]*Y, CO2, Cst, d, YD, Cd, Hh, theta*Y, Y/W,
-        100*(Gd - theta*Y)/Y)
+        100*(Gd - theta*Y)/Y, phi[t], sigma[t])
     Hh_1 <- Hh; Cs_1 <- Cst
   }
+  ## Descomposición por ramas (sección 4b): exactamente aditiva por construcción.
+  ## omega se recupera de la intensidad energética de cada período; en el
+  ## escenario del plan la intensidad de carbono está calibrada a las metas
+  ## (sección 5), de modo que las emisiones se reparten en proporción a
+  ## SIG_G*E_g y SIG_C*E_c y se reescalan al total.
+  o$omega <- omega_de_phi(o$phi)
+  o$E_g   <- o$omega * o$E ;  o$E_c <- (1 - o$omega) * o$E
+  o$Y_g   <- PI_G * o$E_g  ;  o$Y_c <- PI_C * o$E_c
+  k       <- o$CO2 / (SIG_G * o$E_g + SIG_C * o$E_c)
+  o$CO2_g <- k * SIG_G * o$E_g ; o$CO2_c <- k * SIG_C * o$E_c
   o
 }
 
@@ -138,6 +169,37 @@ cat("\n=== CUADRO DE SÍNTESIS FINAL ===\n"); print(t(cuadro))
 ser <- rbind(cbind(s1, esc="1. Sin componente ecologico"), cbind(s2, esc="2. Global"),
              cbind(s3, esc="3. Totalmente renovable"),     cbind(s4, esc="4. PND"))
 write.csv(ser, file.path(OUT,"series_FINAL.csv"), row.names=FALSE, fileEncoding="UTF-8")
+
+## --- 8b. Composición por ramas -------------------------------------------
+cat("\n=== V5. LAS INTENSIDADES DE LOS ESCENARIOS SON LA COMPOSICIÓN DE DOS RAMAS ===\n")
+cat(sprintf("phi(omega22)   = %.6f | PHI_GLOBAL = %.6f\n", phi_de(OMEGA22), PHI_GLOBAL))
+cat(sprintf("sigma(omega22) = %.6f | SIG_GLOBAL = %.6f\n", sig_de(OMEGA22), SIG_GLOBAL))
+cat(sprintf("phi(1)         = %.6f | PHI_RENOV  = %.6f\n", phi_de(1), PHI_RENOV))
+cat(sprintf("sigma(1)       = %.6f | SIG_RENOV  = %.6f\n", sig_de(1), SIG_RENOV))
+cat(sprintf("max |Y_g + Y_c - Y|     = %.2e  (aditividad exacta del producto)\n", max(abs(ser$Y_g + ser$Y_c - ser$Y))))
+cat(sprintf("max |CO2_g + CO2_c - CO2| = %.2e  (aditividad exacta de las emisiones)\n", max(abs(ser$CO2_g + ser$CO2_c - ser$CO2))))
+
+intens <- data.frame(
+  rama = c("Verde (energía renovable)", "No verde (energía fósil)", "Razón no verde / verde"),
+  energia_por_MUSD_TJ = c(1/PI_G, 1/PI_C, (1/PI_C)/(1/PI_G)),
+  CO2_por_TJ_Gg       = c(SIG_G, SIG_C, SIG_C/SIG_G),
+  CO2_por_MUSD_Gg     = c(SIG_G/PI_G, SIG_C/PI_C, (SIG_C/PI_C)/(SIG_G/PI_G)))
+write.csv(intens, file.path(OUT,"intensidades_por_rama_FINAL.csv"), row.names=FALSE, fileEncoding="UTF-8")
+cat("\n=== INTENSIDADES POR RAMA (datos del Balance de Energía, la MIP y el Inventario GEI) ===\n")
+print(intens, row.names = FALSE, digits = 5)
+
+comp <- do.call(rbind, lapply(list(list(s1,"1. Sin componente ecologico"), list(s2,"2. Global"),
+                                   list(s3,"3. Totalmente renovable"), list(s4,"4. PND")), function(x) {
+  d <- x[[1]]; d <- d[d$anio %in% c(2022, 2050), ]
+  data.frame(escenario = x[[2]], anio = d$anio, omega = round(d$omega, 4),
+             Y = round(d$Y, 1), Y_verde = round(d$Y_g, 1), Y_no_verde = round(d$Y_c, 1),
+             part_verde_Y_pct = round(100 * d$Y_g / d$Y, 1),
+             E_verde_TJ = round(d$E_g), E_no_verde_TJ = round(d$E_c),
+             CO2 = round(d$CO2, 1), CO2_verde = round(d$CO2_g, 1), CO2_no_verde = round(d$CO2_c, 1),
+             part_no_verde_CO2_pct = round(100 * d$CO2_c / d$CO2, 1))
+}))
+write.csv(comp, file.path(OUT,"composicion_por_rama_FINAL.csv"), row.names=FALSE, fileEncoding="UTF-8")
+cat("\n=== COMPOSICIÓN POR RAMA, 2022 Y 2050 ===\n"); print(comp, row.names = FALSE)
 
 cat("\n=== EMISIONES DEL ESCENARIO PND FRENTE A LA META ===\n")
 idx <- match(c(2025,2030,2035,2040,2045,2050), s4$anio)
@@ -313,7 +375,8 @@ cat("  acumulación, y por eso se reporta en la sección 3.11 del artículo.\n")
 ###############################################################################
 
 tabla1 <- data.frame(
-  simbolo = c("W","alpha1","alpha2","theta","G","phi","phi","sigma","sigma","rho","kappa"),
+  simbolo = c("W","alpha1","alpha2","theta","G","phi","phi","sigma","sigma","rho","kappa",
+              "omega","pi_g","pi_c","sigma_g","sigma_c"),
   descripcion = c(
     "Productividad media del trabajo",
     "Propensión a consumir del ingreso disponible",
@@ -325,15 +388,24 @@ tabla1 <- data.frame(
     "Intensidad de carbono, escenario de continuidad",
     "Intensidad de carbono, totalmente renovable",
     "Fracción de emisiones compensada por sumideros",
-    "Sensibilidad del daño al acervo de emisiones acumuladas"),
+    "Sensibilidad del daño al acervo de emisiones acumuladas",
+    "Participación renovable en la energía, 2022",
+    "Productividad energética, rama verde",
+    "Productividad energética, rama no verde",
+    "Intensidad de carbono, rama verde",
+    "Intensidad de carbono, rama no verde"),
   valor = c(W, ALPHA1, ALPHA2, TH, G, PHI_GLOBAL, PHI_RENOV,
-            SIG_GLOBAL, SIG_RENOV, RHO, KAPPA),
+            SIG_GLOBAL, SIG_RENOV, RHO, KAPPA,
+            OMEGA22, PI_G, PI_C, SIG_G, SIG_C),
   unidad = c("millones USD por ocupado","fracción","fracción","fracción",
              "millones USD","TJ por millón USD","TJ por millón USD",
              "Gg CO2 por TJ","Gg CO2 por TJ","fracción anual",
-             "fracción del producto por Gg"),
+             "fracción del producto por Gg",
+             "fracción","millones USD por TJ","millones USD por TJ",
+             "Gg CO2 por TJ","Gg CO2 por TJ"),
   condicion = c("Calibrado","Estimado","Calibrado","Calibrado","Calibrado",
-                "Calibrado","Calibrado","Calibrado","Calibrado","Calibrado","Calibrado"),
+                "Calibrado","Calibrado","Calibrado","Calibrado","Calibrado","Calibrado",
+                "Calibrado","Calibrado","Calibrado","Calibrado","Calibrado"),
   stringsAsFactors = FALSE)
 write.csv(tabla1, file.path(OUT, "tabla_parametros_FINAL.csv"),
           row.names = FALSE, fileEncoding = "UTF-8")

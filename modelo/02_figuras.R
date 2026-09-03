@@ -12,6 +12,8 @@
 #    Figura_5_acervo.png           acervo de emisiones acumuladas (esc. 2-4)
 #    Figura_6_deficit.png          deficit primario por escenario
 #    Figura_7_PND_vs_renovable.png plan vs totalmente renovable (2 paneles)
+#    Figura_8_producto_por_rama.png  producto por rama, areas apiladas, 4 escenarios
+#    Figura_9_emisiones_por_rama.png emisiones por rama, areas apiladas, 4 escenarios
 # =====================================================================
 suppressPackageStartupMessages({ library(ggplot2); library(scales) })
 sal <- "salidas"
@@ -90,4 +92,27 @@ ragg::agg_png(file.path(sal, "Figura_7_PND_vs_renovable.png"), width = 17.5, hei
               units = "cm", res = 300)
 print(g7); dev.off()
 cat("   Figura_7_PND_vs_renovable.png \n")
-cat("\nListo. Seis figuras; la Figura 1 es el diagrama del modelo (03_diagrama.R).\n")
+## Figuras 8 y 9: composición por ramas en cada escenario (áreas apiladas)
+COL_RAMA <- c("Rama verde (energía renovable)" = "#1E8449",
+              "Rama no verde (energía fósil)"  = "#8C6D1F")
+fig_ramas <- function(archivo, vg, vc, ejey, escala = 1) {
+  dl <- rbind(data.frame(anio = d$anio, esc_ley = d$esc_ley, rama = names(COL_RAMA)[2], y = d[[vc]] / escala),
+              data.frame(anio = d$anio, esc_ley = d$esc_ley, rama = names(COL_RAMA)[1], y = d[[vg]] / escala))
+  dl$rama <- factor(dl$rama, levels = rev(names(COL_RAMA)))
+  g <- ggplot(dl, aes(anio, y, fill = rama)) +
+    geom_area(alpha = 0.92, colour = "white", linewidth = 0.25, position = "stack") +
+    facet_wrap(~ esc_ley, ncol = 2) +
+    scale_fill_manual(values = COL_RAMA) +
+    scale_y_continuous(labels = miles, expand = expansion(mult = c(0, 0.04))) +
+    scale_x_continuous(breaks = seq(2022, 2050, 7), expand = expansion(mult = 0.01)) +
+    labs(y = ejey) + tema +
+    theme(strip.text = element_text(size = 9.5, colour = "grey15", margin = margin(b = 4)),
+          panel.spacing = unit(0.9, "cm"), legend.key.width = unit(0.9, "cm")) +
+    guides(fill = guide_legend(nrow = 1, reverse = TRUE))
+  ragg::agg_png(file.path(sal, archivo), width = 16, height = 12.5, units = "cm", res = 300)
+  print(g); dev.off()
+  cat("  ", archivo, "\n")
+}
+fig_ramas("Figura_8_producto_por_rama.png", "Y_g", "Y_c", "Millones de dólares constantes de 2022")
+fig_ramas("Figura_9_emisiones_por_rama.png", "CO2_g", "CO2_c", expression("Gigagramos de CO"[2]*" por año"))
+cat("\nListo. Ocho figuras; la Figura 1 es el diagrama del modelo (03_diagrama.R).\n")

@@ -18,16 +18,30 @@ actividad con la demanda de energía, las emisiones de dióxido de carbono y un 
 presión ambiental acumulada de origen doméstico, cuyo costo retroalimenta el ingreso
 disponible de los hogares.
 
+El bloque biofísico está escrito en forma de dos ramas productivas, definidas por la
+fuente de energía que emplean: la rama verde (renovable) y la rama no verde (fósil),
+cada una con su productividad energética y su intensidad de carbono. La participación
+renovable en la energía, ω, es la variable que define cada escenario, y el producto y
+las emisiones se reparten entre ramas de forma exactamente aditiva.
+
 La calibración se fija al año base 2022. El horizonte de simulación llega a 2050.
 
 **Escenarios**
 
-| | Composición energética |
-|---|---|
-| 1. Sin bloque ecológico | modelo contable puro, sin retroalimentación ambiental |
-| 2. Continuidad | se mantiene la matriz energética observada en 2022 |
-| 3. Totalmente renovable | sustitución completa del componente fósil |
-| 4. Plan de Descarbonización | transición gradual conforme a las metas oficiales |
+| | Composición energética | ω |
+|---|---|---:|
+| 1. Sin bloque ecológico | modelo contable puro, sin retroalimentación ambiental | 0,348 |
+| 2. Continuidad | se mantiene la matriz energética observada en 2022 | 0,348 |
+| 3. Totalmente renovable | sustitución completa del componente fósil | 1,000 |
+| 4. Plan de Descarbonización | transición gradual conforme a las metas oficiales | 0,348 → 0,735 |
+
+**Intensidades por rama** (Balance Nacional de Energía 2022, MIP 2017, Inventario GEI 2021)
+
+| | Rama verde | Rama no verde | Razón |
+|---|---:|---:|---:|
+| Energía por millón de USD (TJ) | 1,290 | 3,082 | 2,39 |
+| CO₂ por TJ (Gg) | 0,00882 | 0,05827 | 6,61 |
+| CO₂ por millón de USD (Gg) | 0,0114 | 0,1796 | 15,78 |
 
 **Resultados en 2050** (millones de dólares constantes de 2022)
 
@@ -40,6 +54,15 @@ La calibración se fija al año base 2022. El horizonte de simulación llega a 2
 | Déficit primario (% del producto) | 0,05 | 2,92 | 0,52 | 2,00 |
 
 Los cuatro escenarios parten del producto observado de 2022 (87 863).
+
+**Composición por rama en 2050** (producto en millones de USD de 2022, emisiones en Gg)
+
+| Escenario | Producto verde | Producto no verde | Emisiones verde | Emisiones no verde |
+|---|---:|---:|---:|---:|
+| Sin bloque ecológico | 58 609 | 45 856 | 667 | 8 235 |
+| Continuidad | 47 968 | 37 531 | 546 | 6 740 |
+| Totalmente renovable | 100 797 | 0 | 1 147 | 0 |
+| Plan de Descarbonización | 78 859 | 11 879 | 1 222 | 2 906 |
 
 ---
 
@@ -76,6 +99,8 @@ V1. Ecuación redundante Hh = Hs, verificada con hidden = c('Hh'='Hs'):
 V2. Producto del período 1 = 87862.80504  |  PIB observado de 2022 = 87862.80504
 V3. Estado estacionario G/(theta+daño) = 85491.2  |  simulado en 2050 = 85498.8
 V4. Discrepancia relativa máxima en Y entre ambos métodos = 1.30e-11
+V5. phi(omega22) = 2.076441 = PHI_GLOBAL ; sigma(omega22) = 0.041039 = SIG_GLOBAL
+     max|Y_g + Y_c - Y| = 1.46e-11 ; max|CO2_g + CO2_c - CO2| = 1.82e-12
 ```
 
 La cuarta comprobación contrasta el solucionador analítico del script principal contra
@@ -88,8 +113,8 @@ la resolución independiente del sistema con `sfcr`.
 ```
 ejecutar_todo.R              reproduce el ejercicio completo
 modelo/
-  01_modelo_SFCE.R           parámetros, escenarios, verificaciones y sensibilidad
-  02_figuras.R               figuras 2 a 7 del artículo
+  01_modelo_SFCE.R           parámetros, ramas, escenarios, verificaciones y sensibilidad
+  02_figuras.R               figuras 2 a 9 del artículo (8 y 9: composición por rama)
   03_diagrama.R              figura 1: diagrama del modelo
   04_tablas_complementarias.R  coherencia con las metas del plan, sensibilidad
                                al par (rho, kappa) y comparación entre la
@@ -103,7 +128,11 @@ propensiones/
   *.csv, *.xlsx                        datos derivados de estadística pública
 ```
 
-Los archivos con sufijo `FINAL` en `modelo/salidas/` son los que alimentan el artículo.
+Los archivos con sufijo `FINAL` en `modelo/salidas/` son los que alimentan el artículo:
+`cuadro_sintesis_FINAL.csv` (Tabla 6), `tabla_parametros_FINAL.csv` (Tabla 3),
+`intensidades_por_rama_FINAL.csv` (Tabla 4), `composicion_por_rama_FINAL.csv` (Tabla 7),
+`series_FINAL.csv` (figuras 2 a 9, con las columnas `omega`, `E_g`, `E_c`, `Y_g`, `Y_c`,
+`CO2_g`, `CO2_c` de la descomposición por rama) y `variabilidad_segun_dano.csv` (sección 3.11).
 La carpeta `modelo/verificaciones/` conserva las comprobaciones intermedias del proceso
 de revisión; se publican por transparencia y no forman parte de la cadena de resultados.
 

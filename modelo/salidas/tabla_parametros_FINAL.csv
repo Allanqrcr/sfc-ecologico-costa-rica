@@ -10,3 +10,8 @@
 "sigma","Intensidad de carbono, totalmente renovable",0.00882132065193575,"Gg CO2 por TJ","Calibrado"
 "rho","Fracción de emisiones compensada por sumideros",0.218080022778761,"fracción anual","Calibrado"
 "kappa","Sensibilidad del daño al acervo de emisiones acumuladas",8.7358759291906e-07,"fracción del producto por Gg","Calibrado"
+"omega","Participación renovable en la energía, 2022",0.348482314677922,"fracción","Calibrado"
+"pi_g","Productividad energética, rama verde",0.775340525138186,"millones USD por TJ","Calibrado"
+"pi_c","Productividad energética, rama no verde",0.324474231408261,"millones USD por TJ","Calibrado"
+"sigma_g","Intensidad de carbono, rama verde",0.00882132065193575,"Gg CO2 por TJ","Calibrado"
+"sigma_c","Intensidad de carbono, rama no verde",0.0582716376167466,"Gg CO2 por TJ","Calibrado"
