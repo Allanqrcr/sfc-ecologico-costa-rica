@@ -14,6 +14,7 @@
 #    Figura_7_PND_vs_renovable.png plan vs totalmente renovable (2 paneles)
 #    Figura_8_producto_por_rama.png  producto por rama, areas apiladas, 4 escenarios
 #    Figura_9_emisiones_por_rama.png emisiones por rama, areas apiladas, 4 escenarios
+#    Figura_2_trayectorias.png       compuesta de 4 paneles (version resumida del articulo)
 # =====================================================================
 suppressPackageStartupMessages({ library(ggplot2); library(scales) })
 sal <- "salidas"
@@ -115,4 +116,27 @@ fig_ramas <- function(archivo, vg, vc, ejey, escala = 1) {
 }
 fig_ramas("Figura_8_producto_por_rama.png", "Y_g", "Y_c", "Millones de dólares constantes de 2022")
 fig_ramas("Figura_9_emisiones_por_rama.png", "CO2_g", "CO2_c", expression("Gigagramos de CO"[2]*" por año"))
-cat("\nListo. Ocho figuras; la Figura 1 es el diagrama del modelo (03_diagrama.R).\n")
+## Figura compuesta (version resumida del articulo): producto, emisiones, acervo y
+## deficit primario en cuatro paneles con leyenda comun.
+d4 <- rbind(
+  data.frame(anio = d$anio, esc_ley = d$esc_ley, panel = "Producto (millones de dólares de 2022)", y = d$Y),
+  data.frame(anio = d$anio, esc_ley = d$esc_ley, panel = "Emisiones anuales (gigagramos de CO2)", y = d$CO2),
+  data.frame(anio = d$anio, esc_ley = d$esc_ley, panel = "Acervo de emisiones acumuladas (gigagramos de CO2)", y = d$Cstock),
+  data.frame(anio = d$anio, esc_ley = d$esc_ley, panel = "Déficit primario (porcentaje del producto)", y = d$def))
+d4$panel <- factor(d4$panel, levels = unique(d4$panel))
+g4 <- ggplot(d4, aes(anio, y, colour = esc_ley, linetype = esc_ley)) +
+  geom_line(linewidth = 0.95, lineend = "round") +
+  facet_wrap(~ panel, ncol = 2, scales = "free_y") +
+  scale_colour_manual(values = COL) + scale_linetype_manual(values = LTY) +
+  scale_y_continuous(labels = label_number(big.mark = " ", decimal.mark = ",", accuracy = 1)) +
+  scale_x_continuous(breaks = seq(2022, 2050, 7), expand = expansion(mult = 0.02)) + tema +
+  theme(strip.text = element_text(size = 9, colour = "grey15", margin = margin(b = 4)),
+        axis.title.y = element_blank(), panel.spacing = unit(0.8, "cm"),
+        axis.text = element_text(size = 9)) +
+  guides(colour = guide_legend(nrow = 2, byrow = TRUE), linetype = guide_legend(nrow = 2, byrow = TRUE))
+ragg::agg_png(file.path(sal, "Figura_2_trayectorias.png"), width = 16, height = 13, units = "cm", res = 300)
+print(g4); dev.off()
+cat("   Figura_2_trayectorias.png (compuesta, version resumida)\n")
+cat("
+Listo. Nueve figuras mas la compuesta; la Figura 1 es el diagrama del modelo (03_diagrama.R).
+")

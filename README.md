@@ -114,7 +114,8 @@ la resolución independiente del sistema con `sfcr`.
 ejecutar_todo.R              reproduce el ejercicio completo
 modelo/
   01_modelo_SFCE.R           parámetros, ramas, escenarios, verificaciones y sensibilidad
-  02_figuras.R               figuras 2 a 9 del artículo (8 y 9: composición por rama)
+  02_figuras.R               figuras 2 a 9 del artículo (8 y 9: composición por rama) y la
+                             figura compuesta Figura_2_trayectorias.png de la versión resumida
   03_diagrama.R              figura 1: diagrama del modelo
   04_tablas_complementarias.R  coherencia con las metas del plan, sensibilidad
                                al par (rho, kappa) y comparación entre la
